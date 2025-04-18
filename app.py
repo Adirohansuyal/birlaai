@@ -1,8 +1,16 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-# Using our local symptom analyzer instead of OpenAI
-from utils.symptom_analyzer import analyze_symptoms
+import os
+
+# Try to use Gemini if API key is available, otherwise fall back to local analyzer
+if os.environ.get("GOOGLE_API_KEY"):
+    from utils.gemini_helper import analyze_symptoms, get_symptom_conversation
+    USING_AI = True
+else:
+    from utils.symptom_analyzer import analyze_symptoms
+    USING_AI = False
+
 from data.symptoms import COMMON_SYMPTOMS, BODY_SYSTEMS, SYMPTOM_SEVERITY, SYMPTOM_DURATION
 
 def main():
@@ -98,14 +106,23 @@ def main():
     # Information section about the app
     st.sidebar.markdown("---")
     st.sidebar.subheader("About this App")
-    st.sidebar.info(
+    
+    if USING_AI:
+        app_description = """
+        This Symptom Checker uses Google's Gemini AI to analyze your symptoms and 
+        provide potential health conditions, advice, and diet recommendations.
+        
+        Remember that this tool does not replace professional medical advice.
         """
+    else:
+        app_description = """
         This Symptom Checker uses a comprehensive symptom database to analyze your symptoms and 
         provide potential health conditions, advice, and diet recommendations.
         
         Remember that this tool does not replace professional medical advice.
         """
-    )
+    
+    st.sidebar.info(app_description)
 
 def display_results(analysis, symptoms):
     """Display the analysis results in a structured format."""
@@ -175,6 +192,42 @@ def display_results(analysis, symptoms):
     sources = analysis.get("medical_sources", [])
     for source in sources:
         st.write(f"• {source}")
+    
+    # Add AI Symptom Assistant if using Gemini
+    if USING_AI:
+        st.subheader("💬 Symptom Assistant")
+        st.write("Ask our AI assistant about your symptoms for more personalized advice:")
+        
+        # Initialize conversation state if it doesn't exist
+        if 'conversation' not in st.session_state:
+            st.session_state.conversation = []
+        
+        # Get a conversational response about the symptoms
+        if len(symptoms) > 0:
+            ai_response = get_symptom_conversation(symptoms, st.session_state.conversation)
+            
+            # Display the response in a chat-like interface
+            st.info(ai_response)
+            
+            # Store this interaction
+            st.session_state.conversation.append({"role": "user", "parts": [f"I have these symptoms: {', '.join(symptoms)}"]})
+            st.session_state.conversation.append({"role": "model", "parts": [ai_response]})
+            
+            # Allow follow-up questions
+            follow_up = st.text_input("Ask a follow-up question about your symptoms:")
+            if follow_up:
+                with st.spinner("Getting response..."):
+                    # Add this question to the conversation
+                    st.session_state.conversation.append({"role": "user", "parts": [follow_up]})
+                    
+                    # Get AI response
+                    response = get_symptom_conversation(symptoms, st.session_state.conversation)
+                    
+                    # Display response
+                    st.info(response)
+                    
+                    # Store response
+                    st.session_state.conversation.append({"role": "model", "parts": [response]})
     
     # Reminder about medical advice
     st.markdown("---")
