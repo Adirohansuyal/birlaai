@@ -473,7 +473,9 @@ def display_results(analysis, symptoms):
                 'severity':
                 st.session_state.get('severity', 'Not specified'),
                 'additional_info':
-                st.session_state.get('additional_info', '')
+                st.session_state.get('additional_info', ''),
+                'patient_image':
+                st.session_state.get('patient_image', None)
             }
         }
 
