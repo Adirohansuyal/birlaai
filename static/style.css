@@ -1,0 +1,171 @@
+/* Custom CSS for Symptom Checker Application */
+
+/* Main container styling */
+.main-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card styling */
+.css-1r6slb0 .stExpander {
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  margin-bottom: 1rem;
+}
+
+/* Header styling */
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+h1 {
+  color: #1E88E5;
+  margin-bottom: 1.5rem;
+}
+
+/* Info boxes */
+.stAlert {
+  border-radius: 8px;
+}
+
+/* Sidebar styling */
+.css-1d391kg {
+  padding: 2rem 1rem;
+}
+
+/* Input fields */
+.stTextInput input, .stNumberInput input, .stSelectbox, .stMultiselect {
+  border-radius: 6px;
+}
+
+/* Button styling */
+.stButton button {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.stButton button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Tabs styling */
+.stTabs button {
+  font-weight: 500;
+}
+
+/* Risk level badges */
+.risk-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 500;
+  text-align: center;
+  margin-right: 0.5rem;
+}
+
+.risk-high {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.risk-moderate {
+  background-color: #fff8e1;
+  color: #ff8f00;
+  border: 1px solid #ffe082;
+}
+
+.risk-low {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+/* Symptom list */
+.symptom-list li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+/* Condition card */
+.condition-card {
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.condition-card h4 {
+  margin-top: 0;
+  color: #1E88E5;
+}
+
+/* Chat container */
+.chat-container {
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: #F8F9FA;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+}
+
+.user-message {
+  background-color: #E3F2FD;
+  margin-left: 1rem;
+  text-align: right;
+}
+
+.ai-message {
+  background-color: #FFFFFF;
+  margin-right: 1rem;
+  border: 1px solid #E0E0E0;
+}
+
+/* Progress container */
+.progress-container {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .main-container {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+  color: #9E9E9E;
+  font-size: 0.8rem;
+}
