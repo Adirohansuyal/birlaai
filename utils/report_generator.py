@@ -33,6 +33,10 @@ def generate_qr_code(data, size=200, save_path=None):
     Returns:
         str: Base64 encoded QR code image for embedding in HTML
     """
+    # Ensure QR codes directory exists
+    qr_codes_dir = Path("static/qr_codes")
+    qr_codes_dir.mkdir(parents=True, exist_ok=True)
+    
     # Create QR code instance
     qr = qrcode.QRCode(
         version=1,
@@ -51,9 +55,13 @@ def generate_qr_code(data, size=200, save_path=None):
     # Resize if needed
     img = img.resize((size, size))
     
-    # Save to file if path provided
+    # Save to specified path or generate a default one
     if save_path:
         img.save(save_path)
+    else:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        default_path = f"static/qr_codes/qr_code_{timestamp}.png"
+        img.save(default_path)
     
     # Convert to base64 for embedding in HTML
     buffered = io.BytesIO()
