@@ -412,39 +412,21 @@ def display_results(analysis, symptoms):
             report_tabs = st.tabs(["PDF Report", "HTML Report", "QR Code"])
             
             with report_tabs[0]:  # PDF Tab
-                if st.button("📄 Generate PDF Report", key="generate_pdf_report"):
-                    with st.spinner("Generating PDF report..."):
-                        # Create HTML report first
-                        user_data = st.session_state.current_analysis['user_data']
-                        html_report = generate_html_report(
-                            analysis, 
-                            symptoms,
-                            user_data
-                        )
-                        
-                        # Convert to PDF
-                        patient_name = user_data.get('patient_name', 'Patient')
-                        pdf_bytes, filename = generate_pdf_report(html_report, patient_name)
-                        
-                        # Create a download link for the PDF
-                        b64_pdf = base64.b64encode(pdf_bytes).decode()
-                        href = f'data:application/pdf;base64,{b64_pdf}'
-                        
-                        st.success("PDF Report generated successfully!")
-                        st.markdown(f"""
-                        <div style="text-align: center; margin: 1rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
-                            <h3 style="margin-top: 0;">PDF Report Ready</h3>
-                            <p>You can now download your symptom analysis report in PDF format.</p>
-                            <a href="{href}" download="{filename}" 
-                               style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
-                                      text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
-                                Download PDF Report
-                            </a>
-                            <p style="margin-top: 1rem; font-size: 0.9rem;">
-                                <i>Perfect for sharing with your healthcare provider</i>
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                if st.download_button(
+                    label="📄 Generate PDF Report",
+                    key="generate_pdf_report",
+                    data=lambda: generate_pdf_report(
+                        generate_html_report(
+                            st.session_state.current_analysis['analysis'],
+                            st.session_state.current_analysis['symptoms'],
+                            st.session_state.current_analysis['user_data']
+                        ),
+                        st.session_state.current_analysis['user_data'].get('patient_name', 'Patient')
+                    )[0],
+                    file_name=f"AI_Health_Advisor_Report_{datetime.datetime.now().strftime('%Y%m%d')}.pdf",
+                    mime="application/pdf"
+                ):
+                    st.success("PDF Report downloaded successfully!")
                         
             with report_tabs[1]:  # HTML Tab
                 if st.button("🌐 Generate HTML Report", key="generate_html_report"):
