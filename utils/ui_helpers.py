@@ -21,7 +21,7 @@ def display_header():
     # Title with icon and styling
     st.markdown("""
     <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-        <h1 style="margin: 0; display: inline-block;">🏥 Symptom Checker</h1>
+        <h1 style="margin: 0; display: inline-block;">🏥 Birla AI Symptoms Checker</h1>
     </div>
     <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem;">
         Enter your symptoms for a comprehensive health analysis powered by AI
