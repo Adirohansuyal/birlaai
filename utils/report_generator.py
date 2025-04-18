@@ -4,8 +4,11 @@ This module creates printable and shareable reports from symptom analysis result
 """
 
 import json
+import os
 import datetime
+import tempfile
 from jinja2 import Template
+from weasyprint import HTML
 
 def format_date(date_obj=None):
     """Format date for reports"""
@@ -32,7 +35,7 @@ def generate_html_report(analysis, symptoms, user_data):
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Symptom Analysis Report</title>
+        <title>Symptom Analysis Report for {{ user_data.patient_name }}</title>
         <style>
             body {
                 font-family: 'Helvetica', 'Arial', sans-serif;
@@ -52,9 +55,21 @@ def generate_html_report(analysis, symptoms, user_data):
                 color: #1E88E5;
                 margin-bottom: 5px;
             }
+            .header h2 {
+                color: #1976D2;
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
             .report-date {
                 color: #666;
                 font-style: italic;
+            }
+            .app-name {
+                font-weight: bold;
+                color: #1976D2;
+                display: block;
+                margin-bottom: 10px;
+                font-size: 1.2em;
             }
             .section {
                 margin-bottom: 30px;
@@ -176,7 +191,9 @@ def generate_html_report(analysis, symptoms, user_data):
         <button class="print-button" onclick="window.print()">Print Report</button>
         
         <div class="header">
+            <span class="app-name">AI Health Advisor - Medical Report</span>
             <h1>Symptom Analysis Report</h1>
+            <h2>Patient: {{ user_data.patient_name }}</h2>
             <p class="report-date">Generated on {{ report_date }}</p>
         </div>
         

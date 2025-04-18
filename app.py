@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 import base64
+import datetime
 from pathlib import Path
 
 # Import UI helpers
@@ -62,6 +63,11 @@ def main():
             with st.form("user_info_form"):
                 # User details section
                 st.markdown('<div style="background-color: #F5F5F5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">', unsafe_allow_html=True)
+                
+                # Patient name
+                patient_name = st.text_input("Patient Name", placeholder="Enter your full name")
+                # Store in session state for report
+                st.session_state.patient_name = patient_name
                 
                 # Basic info in columns
                 col1, col2 = st.columns(2)
@@ -389,6 +395,7 @@ def display_results(analysis, symptoms):
             'analysis': analysis,
             'symptoms': symptoms,
             'user_data': {
+                'patient_name': st.session_state.get('patient_name', 'Not specified'),
                 'age': st.session_state.get('age', 30),
                 'gender': st.session_state.get('gender', 'Not specified'),
                 'duration': st.session_state.get('duration', 'Not specified'),
@@ -413,11 +420,20 @@ def display_results(analysis, symptoms):
                 b64_html = base64.b64encode(html_report.encode()).decode()
                 href = f'data:text/html;base64,{b64_html}'
                 
+                # Get patient name for the filename (default if not provided)
+                patient_name = user_data.get('patient_name', 'Patient').replace(" ", "_")
+                if patient_name == 'Not_specified':
+                    patient_name = 'Patient'
+                
+                # Create a date string for the filename
+                date_str = datetime.datetime.now().strftime("%Y%m%d")
+                filename = f"AI_Health_Advisor_{patient_name}_{date_str}.html"
+                
                 st.markdown(f"""
                 <div style="text-align: center; margin: 2rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
                     <h3 style="margin-top: 0;">Report Generated Successfully</h3>
                     <p>You can now download and print your symptom analysis report.</p>
-                    <a href="{href}" download="symptom_report.html" 
+                    <a href="{href}" download="{filename}" 
                        style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
                               text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
                         Download Report
