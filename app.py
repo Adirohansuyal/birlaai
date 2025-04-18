@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import time
+import base64
 from pathlib import Path
 
 # Import UI helpers
@@ -12,6 +13,9 @@ from utils.ui_helpers import (
     display_symptom_list, display_condition_card, 
     display_chat_message, display_footer
 )
+
+# Import report generator
+from utils.report_generator import generate_html_report
 
 # Try to use Gemini if API key is available, otherwise fall back to local analyzer
 if os.environ.get("GOOGLE_API_KEY"):
@@ -63,8 +67,12 @@ def main():
                 col1, col2 = st.columns(2)
                 with col1:
                     age = st.number_input("Age", min_value=1, max_value=120, value=30)
+                    # Store in session state for report
+                    st.session_state.age = age
                 with col2:
                     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
+                    # Store in session state for report
+                    st.session_state.gender = gender
                 
                 st.markdown('</div>', unsafe_allow_html=True)
                 
@@ -125,11 +133,17 @@ def main():
                 col1, col2 = st.columns(2)
                 with col1:
                     duration = st.selectbox("Duration", SYMPTOM_DURATION)
+                    # Store in session state for report
+                    st.session_state.duration = duration
                 with col2:
                     severity = st.selectbox("Severity", SYMPTOM_SEVERITY)
+                    # Store in session state for report
+                    st.session_state.severity = severity
                 
                 # Additional information
                 additional_info = st.text_area("Medical History, Allergies, etc.", height=100)
+                # Store in session state for report
+                st.session_state.additional_info = additional_info
                 
                 # Submit button with improved styling
                 st.markdown("<div style='margin-top: 2rem;'>", unsafe_allow_html=True)
@@ -366,14 +380,67 @@ def display_results(analysis, symptoms):
             
             st.markdown('</div>', unsafe_allow_html=True)
         
+        # Store analysis in session state for report generation
+        if 'current_analysis' not in st.session_state:
+            st.session_state.current_analysis = {}
+        
+        # Store current analysis, symptoms, and user data for report generation
+        st.session_state.current_analysis = {
+            'analysis': analysis,
+            'symptoms': symptoms,
+            'user_data': {
+                'age': st.session_state.get('age', 30),
+                'gender': st.session_state.get('gender', 'Not specified'),
+                'duration': st.session_state.get('duration', 'Not specified'),
+                'severity': st.session_state.get('severity', 'Not specified'),
+                'additional_info': st.session_state.get('additional_info', '')
+            }
+        }
+        
         # Action buttons
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("📋 Save Results"):
-                st.info("This feature would allow saving results to PDF or printing them. (Not implemented)")
+            if st.button("📋 Generate Report", key="generate_report"):
+                # Create HTML report
+                user_data = st.session_state.current_analysis['user_data']
+                html_report = generate_html_report(
+                    analysis, 
+                    symptoms,
+                    user_data
+                )
+                
+                # Create a download link for the report
+                b64_html = base64.b64encode(html_report.encode()).decode()
+                href = f'data:text/html;base64,{b64_html}'
+                
+                st.markdown(f"""
+                <div style="text-align: center; margin: 2rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
+                    <h3 style="margin-top: 0;">Report Generated Successfully</h3>
+                    <p>You can now download and print your symptom analysis report.</p>
+                    <a href="{href}" download="symptom_report.html" 
+                       style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
+                              text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
+                        Download Report
+                    </a>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        <i>The report will open in a new tab where you can review and print it.</i>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
         with col2:
-            if st.button("🔍 More Information"):
-                st.info("This feature would provide additional health resources. (Not implemented)")
+            if st.button("🔍 Health Resources", key="health_resources"):
+                st.markdown("""
+                <div style="padding: 1rem; background-color: #F5F5F5; border-radius: 8px; margin-top: 1rem;">
+                    <h4 style="color: #1E88E5;">Helpful Health Resources</h4>
+                    <ul>
+                        <li><a href="https://www.who.int" target="_blank">World Health Organization</a></li>
+                        <li><a href="https://www.mayoclinic.org" target="_blank">Mayo Clinic</a></li>
+                        <li><a href="https://www.cdc.gov" target="_blank">Centers for Disease Control and Prevention</a></li>
+                        <li><a href="https://medlineplus.gov" target="_blank">MedlinePlus</a></li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
         
         # Medical disclaimer reminder with improved styling
         st.markdown("""
