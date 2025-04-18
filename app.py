@@ -412,17 +412,20 @@ def display_results(analysis, symptoms):
             report_tabs = st.tabs(["PDF Report", "HTML Report", "QR Code"])
             
             with report_tabs[0]:  # PDF Tab
+                # Generate PDF data first
+                pdf_data = generate_pdf_report(
+                    generate_html_report(
+                        st.session_state.current_analysis['analysis'],
+                        st.session_state.current_analysis['symptoms'],
+                        st.session_state.current_analysis['user_data']
+                    ),
+                    st.session_state.current_analysis['user_data'].get('patient_name', 'Patient')
+                )[0]
+                
                 if st.download_button(
                     label="📄 Generate PDF Report",
                     key="generate_pdf_report",
-                    data=lambda: generate_pdf_report(
-                        generate_html_report(
-                            st.session_state.current_analysis['analysis'],
-                            st.session_state.current_analysis['symptoms'],
-                            st.session_state.current_analysis['user_data']
-                        ),
-                        st.session_state.current_analysis['user_data'].get('patient_name', 'Patient')
-                    )[0],
+                    data=pdf_data,
                     file_name=f"AI_Health_Advisor_Report_{datetime.datetime.now().strftime('%Y%m%d')}.pdf",
                     mime="application/pdf"
                 ):
