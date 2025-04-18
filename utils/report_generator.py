@@ -33,6 +33,9 @@ def generate_qr_code(data, size=200, save_path=None):
     Returns:
         str: Base64 encoded QR code image for embedding in HTML
     """
+    from pathlib import Path
+    import datetime
+    
     # Ensure QR codes directory exists
     qr_codes_dir = Path("static/qr_codes")
     qr_codes_dir.mkdir(parents=True, exist_ok=True)
