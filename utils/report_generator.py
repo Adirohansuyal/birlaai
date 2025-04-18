@@ -21,13 +21,14 @@ def format_date(date_obj=None):
         date_obj = datetime.datetime.now()
     return date_obj.strftime("%B %d, %Y at %I:%M %p")
 
-def generate_qr_code(data, size=200):
+def generate_qr_code(data, size=200, save_path=None):
     """
     Generate a QR code for the given data.
     
     Args:
         data (str): Data to encode in the QR code
         size (int): Size of the QR code image in pixels
+        save_path (str, optional): Path to save the QR code image
         
     Returns:
         str: Base64 encoded QR code image for embedding in HTML
@@ -49,6 +50,10 @@ def generate_qr_code(data, size=200):
     
     # Resize if needed
     img = img.resize((size, size))
+    
+    # Save to file if path provided
+    if save_path:
+        img.save(save_path)
     
     # Convert to base64 for embedding in HTML
     buffered = io.BytesIO()
