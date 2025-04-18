@@ -78,8 +78,32 @@ def analyze_symptoms(symptoms, age, gender, duration, severity, additional_info=
     """
     
     try:
+        # Get available models to use the correct one
+        models = genai.list_models()
+        available_models = [model.name for model in models]
+        
+        # Try to find the best available model (prefer gemini-1.5-pro or gemini-1.0-pro)
+        model_name = None
+        for candidate in ["gemini-1.5-pro", "gemini-1.0-pro", "gemini-pro"]:
+            for available in available_models:
+                if candidate in available:
+                    model_name = available
+                    break
+            if model_name:
+                break
+        
+        # If no matching model found, use the first available text model
+        if not model_name:
+            for model in models:
+                if hasattr(model, 'supported_generation_methods') and 'generateContent' in model.supported_generation_methods:
+                    model_name = model.name
+                    break
+        
+        if not model_name:
+            raise Exception("No suitable generative models found in your Google API account")
+            
         # Setup the model
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel(model_name)
         
         # Call the Gemini API
         response = model.generate_content(
@@ -146,8 +170,32 @@ def get_symptom_conversation(symptoms, previous_conversation=None):
     """
     
     try:
+        # Get available models to use the correct one
+        models = genai.list_models()
+        available_models = [model.name for model in models]
+        
+        # Try to find the best available model (prefer gemini-1.5-pro or gemini-1.0-pro)
+        model_name = None
+        for candidate in ["gemini-1.5-pro", "gemini-1.0-pro", "gemini-pro"]:
+            for available in available_models:
+                if candidate in available:
+                    model_name = available
+                    break
+            if model_name:
+                break
+        
+        # If no matching model found, use the first available text model
+        if not model_name:
+            for model in models:
+                if hasattr(model, 'supported_generation_methods') and 'generateContent' in model.supported_generation_methods:
+                    model_name = model.name
+                    break
+        
+        if not model_name:
+            raise Exception("No suitable generative models found in your Google API account")
+            
         # Setup the model
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel(model_name)
         
         # Prepare the conversation history
         conversation = previous_conversation.copy()
