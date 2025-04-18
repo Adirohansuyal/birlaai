@@ -355,3 +355,38 @@ def save_report_to_file(html_content, filename=None):
         f.write(html_content)
     
     return filename
+
+def generate_pdf_report(html_content, patient_name="Patient"):
+    """
+    Generate a PDF report from HTML content.
+    
+    Args:
+        html_content (str): HTML content to convert to PDF
+        patient_name (str): Name of the patient for the filename
+        
+    Returns:
+        tuple: (pdf_bytes, filename) - The PDF as bytes and suggested filename
+    """
+    # Create sanitized patient name for filename
+    safe_name = patient_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
+    if safe_name == "Not_specified":
+        safe_name = "Patient"
+    
+    # Create a date string for the filename
+    date_str = datetime.datetime.now().strftime("%Y%m%d")
+    filename = f"AI_Health_Advisor_{safe_name}_{date_str}.pdf"
+    
+    # Create a temporary HTML file
+    with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as temp_html:
+        temp_html.write(html_content.encode('utf-8'))
+        temp_html_path = temp_html.name
+    
+    try:
+        # Convert HTML to PDF
+        html = HTML(filename=temp_html_path)
+        pdf_bytes = html.write_pdf()
+        return pdf_bytes, filename
+    finally:
+        # Clean up the temporary file
+        if os.path.exists(temp_html_path):
+            os.unlink(temp_html_path)

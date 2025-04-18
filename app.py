@@ -16,7 +16,7 @@ from utils.ui_helpers import (
 )
 
 # Import report generator
-from utils.report_generator import generate_html_report
+from utils.report_generator import generate_html_report, generate_pdf_report
 
 # Try to use Gemini if API key is available, otherwise fall back to local analyzer
 if os.environ.get("GOOGLE_API_KEY"):
@@ -407,42 +407,82 @@ def display_results(analysis, symptoms):
         # Action buttons
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("📋 Generate Report", key="generate_report"):
-                # Create HTML report
-                user_data = st.session_state.current_analysis['user_data']
-                html_report = generate_html_report(
-                    analysis, 
-                    symptoms,
-                    user_data
-                )
-                
-                # Create a download link for the report
-                b64_html = base64.b64encode(html_report.encode()).decode()
-                href = f'data:text/html;base64,{b64_html}'
-                
-                # Get patient name for the filename (default if not provided)
-                patient_name = user_data.get('patient_name', 'Patient').replace(" ", "_")
-                if patient_name == 'Not_specified':
-                    patient_name = 'Patient'
-                
-                # Create a date string for the filename
-                date_str = datetime.datetime.now().strftime("%Y%m%d")
-                filename = f"AI_Health_Advisor_{patient_name}_{date_str}.html"
-                
-                st.markdown(f"""
-                <div style="text-align: center; margin: 2rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
-                    <h3 style="margin-top: 0;">Report Generated Successfully</h3>
-                    <p>You can now download and print your symptom analysis report.</p>
-                    <a href="{href}" download="{filename}" 
-                       style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
-                              text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
-                        Download Report
-                    </a>
-                    <p style="margin-top: 1rem; font-size: 0.9rem;">
-                        <i>The report will open in a new tab where you can review and print it.</i>
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+            # Create tabs for different report formats
+            report_tabs = st.tabs(["PDF Report", "HTML Report"])
+            
+            with report_tabs[0]:  # PDF Tab
+                if st.button("📄 Generate PDF Report", key="generate_pdf_report"):
+                    with st.spinner("Generating PDF report..."):
+                        # Create HTML report first
+                        user_data = st.session_state.current_analysis['user_data']
+                        html_report = generate_html_report(
+                            analysis, 
+                            symptoms,
+                            user_data
+                        )
+                        
+                        # Convert to PDF
+                        patient_name = user_data.get('patient_name', 'Patient')
+                        pdf_bytes, filename = generate_pdf_report(html_report, patient_name)
+                        
+                        # Create a download link for the PDF
+                        b64_pdf = base64.b64encode(pdf_bytes).decode()
+                        href = f'data:application/pdf;base64,{b64_pdf}'
+                        
+                        st.success("PDF Report generated successfully!")
+                        st.markdown(f"""
+                        <div style="text-align: center; margin: 1rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
+                            <h3 style="margin-top: 0;">PDF Report Ready</h3>
+                            <p>You can now download your symptom analysis report in PDF format.</p>
+                            <a href="{href}" download="{filename}" 
+                               style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
+                                      text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
+                                Download PDF Report
+                            </a>
+                            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                                <i>Perfect for sharing with your healthcare provider</i>
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+            with report_tabs[1]:  # HTML Tab
+                if st.button("🌐 Generate HTML Report", key="generate_html_report"):
+                    # Create HTML report
+                    user_data = st.session_state.current_analysis['user_data']
+                    html_report = generate_html_report(
+                        analysis, 
+                        symptoms,
+                        user_data
+                    )
+                    
+                    # Create a download link for the report
+                    b64_html = base64.b64encode(html_report.encode()).decode()
+                    href = f'data:text/html;base64,{b64_html}'
+                    
+                    # Get patient name for the filename (default if not provided)
+                    patient_name = user_data.get('patient_name', 'Patient').replace(" ", "_")
+                    if patient_name == 'Not_specified':
+                        patient_name = 'Patient'
+                    
+                    # Create a date string for the filename
+                    date_str = datetime.datetime.now().strftime("%Y%m%d")
+                    filename = f"AI_Health_Advisor_{patient_name}_{date_str}.html"
+                    
+                    st.success("HTML Report generated successfully!")
+                    st.markdown(f"""
+                    <div style="text-align: center; margin: 1rem 0; padding: 1.5rem; background-color: #E3F2FD; border-radius: 8px;">
+                        <h3 style="margin-top: 0;">HTML Report Ready</h3>
+                        <p>You can now download and print your interactive symptom analysis report.</p>
+                        <a href="{href}" download="{filename}" 
+                           style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.8rem 1.5rem; 
+                                  text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 1rem;">
+                            Download HTML Report
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">
+                            <i>The report will open in a new tab where you can review and print it.</i>
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
                 
         with col2:
             if st.button("🔍 Health Resources", key="health_resources"):
