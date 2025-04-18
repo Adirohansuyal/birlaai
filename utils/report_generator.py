@@ -7,14 +7,55 @@ import json
 import os
 import datetime
 import tempfile
+import base64
+import io
+import uuid
 from jinja2 import Template
 from weasyprint import HTML
+import qrcode
+from PIL import Image
 
 def format_date(date_obj=None):
     """Format date for reports"""
     if date_obj is None:
         date_obj = datetime.datetime.now()
     return date_obj.strftime("%B %d, %Y at %I:%M %p")
+
+def generate_qr_code(data, size=200):
+    """
+    Generate a QR code for the given data.
+    
+    Args:
+        data (str): Data to encode in the QR code
+        size (int): Size of the QR code image in pixels
+        
+    Returns:
+        str: Base64 encoded QR code image for embedding in HTML
+    """
+    # Create QR code instance
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    
+    # Add data to the QR code
+    qr.add_data(data)
+    qr.make(fit=True)
+    
+    # Create an image from the QR code
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Resize if needed
+    img = img.resize((size, size))
+    
+    # Convert to base64 for embedding in HTML
+    buffered = io.BytesIO()
+    img.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    
+    return f"data:image/png;base64,{img_str}"
 
 def generate_html_report(analysis, symptoms, user_data):
     """
@@ -184,6 +225,22 @@ def generate_html_report(analysis, symptoms, user_data):
                 .disclaimer {
                     border: 1px solid #ccc;
                 }
+                .doctor-reference {
+                    page-break-inside: avoid;
+                    border: 1px solid #000 !important;
+                    background-color: #f9f9f9 !important;
+                }
+                .doctor-reference h3 {
+                    color: #000 !important; 
+                }
+                /* Add a footer with page numbers */
+                @page {
+                    margin: 1cm;
+                    @bottom-center {
+                        content: "Page " counter(page) " of " counter(pages);
+                        font-size: 10pt;
+                    }
+                }
             }
         </style>
     </head>
@@ -191,10 +248,20 @@ def generate_html_report(analysis, symptoms, user_data):
         <button class="print-button" onclick="window.print()">Print Report</button>
         
         <div class="header">
-            <span class="app-name">AI Health Advisor - Medical Report</span>
-            <h1>Symptom Analysis Report</h1>
-            <h2>Patient: {{ user_data.patient_name }}</h2>
-            <p class="report-date">Generated on {{ report_date }}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span class="app-name">AI Health Advisor - Medical Report</span>
+                    <h1>Symptom Analysis Report</h1>
+                    <h2>Patient: {{ user_data.patient_name }}</h2>
+                    <p class="report-date">Generated on {{ report_date }}</p>
+                </div>
+                <div style="text-align: center;">
+                    {% if qr_code_image %}
+                    <img src="{{ qr_code_image }}" alt="QR Code" style="width: 120px; height: 120px;">
+                    <p style="font-size: 0.8em; margin-top: 5px; color: #666;">Scan for digital report</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         
         <div class="section">
@@ -305,12 +372,46 @@ def generate_html_report(analysis, symptoms, user_data):
             {% endif %}
         </div>
         
+        <div class="doctor-reference" style="margin: 2rem 0; padding: 1.5rem; border: 1px dashed #1E88E5; border-radius: 8px;">
+            <h3 style="color: #1E88E5; margin-top: 0;">For Healthcare Provider Reference</h3>
+            <p>This section is designed to help healthcare providers quickly review this patient's reported symptoms.</p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 1rem;">
+                <div style="flex: 2;">
+                    <h4>Summary:</h4>
+                    <ul>
+                        <li><strong>Patient:</strong> {{ user_data.patient_name }}</li>
+                        <li><strong>Age/Gender:</strong> {{ user_data.age }}/{{ user_data.gender }}</li>
+                        <li><strong>Risk Assessment:</strong> {{ analysis.risk_level }}</li>
+                        <li><strong>Primary Symptoms:</strong> {{ symptoms|join(', ') }}</li>
+                        <li><strong>Duration:</strong> {{ user_data.duration }}</li>
+                        <li><strong>Report ID:</strong> {{ report_id }}</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    {% if qr_code_image %}
+                    <img src="{{ qr_code_image }}" alt="QR Code" style="width: 120px; height: 120px; margin-bottom: 8px;">
+                    <p style="font-size: 0.8em; margin: 0; color: #666;">Scan for digital reference</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem; border-top: 1px dotted #ccc; padding-top: 1rem;">
+                <p><strong>Healthcare Provider Notes:</strong></p>
+                <div style="height: 80px; border: 1px solid #ddd; border-radius: 4px;"></div>
+            </div>
+        </div>
+        
         <div class="disclaimer">
             <h3>Medical Disclaimer</h3>
             <p><strong>Important:</strong> This report is generated based on the symptoms you provided and is NOT a medical diagnosis.
             The information provided should not replace professional medical advice, diagnosis, or treatment.
             Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
             <p>If you are experiencing a medical emergency, please call your local emergency number or go to the nearest emergency room immediately.</p>
+        </div>
+        
+        <div style="margin-top: 3rem; text-align: center; color: #777; font-size: 0.8em; border-top: 1px solid #eee; padding-top: 1rem;">
+            <p>Report ID: {{ report_id }} | Generated on {{ report_date }} | AI Health Advisor v1.0</p>
         </div>
         
         <script>
@@ -326,11 +427,39 @@ def generate_html_report(analysis, symptoms, user_data):
     # Create template and render with data
     template = Template(template_str)
     
+    # Generate a unique report ID
+    report_id = str(uuid.uuid4())
+    
+    # Create QR code data - we'll include a comprehensive summary for medical professionals
+    qr_data = {
+        "report_id": report_id,
+        "patient": user_data.get('patient_name', 'Unknown'),
+        "age": user_data.get('age', 'Unknown'),
+        "gender": user_data.get('gender', 'Unknown'),
+        "timestamp": format_date(),
+        "risk_level": analysis.get('risk_level', 'Unknown'),
+        "seek_medical_attention": analysis.get('seek_medical_attention', False),
+        "symptoms": symptoms,
+        "duration": user_data.get('duration', 'Unknown'),
+        "severity": user_data.get('severity', 'Unknown'),
+        "app": "AI Health Advisor - Medical Report",
+        "conditions": [c.get('name') for c in analysis.get('possible_conditions', [])][:3]
+    }
+    
+    # Convert to JSON string for QR code
+    qr_json = json.dumps(qr_data)
+    
+    # Generate QR code image
+    qr_code_image = generate_qr_code(qr_json, size=150)
+    
+    # Render the template with all data including QR code
     rendered_html = template.render(
         report_date=format_date(),
         user_data=user_data,
         symptoms=symptoms,
-        analysis=analysis
+        analysis=analysis,
+        qr_code_image=qr_code_image,
+        report_id=report_id
     )
     
     return rendered_html
