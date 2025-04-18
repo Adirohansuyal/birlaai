@@ -86,6 +86,16 @@ def main():
                                           ["Male", "Female", "Other"])
                     # Store in session state for report
                     st.session_state.gender = gender
+                
+                # Image upload
+                uploaded_image = st.file_uploader("Upload Patient Photo", type=['png', 'jpg', 'jpeg'])
+                if uploaded_image is not None:
+                    # Display the uploaded image
+                    st.image(uploaded_image, width=200)
+                    # Convert image to base64 for storage
+                    image_bytes = uploaded_image.getvalue()
+                    image_b64 = base64.b64encode(image_bytes).decode()
+                    st.session_state.patient_image = image_b64
 
                 st.markdown('</div>', unsafe_allow_html=True)
 

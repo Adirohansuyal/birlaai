@@ -270,6 +270,13 @@ def generate_html_report(analysis, symptoms, user_data):
                     <h1>Symptom Analysis Report</h1>
                     <h2>Patient: {{ user_data.patient_name }}</h2>
                     <p class="report-date">Generated on {{ report_date }}</p>
+                    {% if user_data.patient_image %}
+                    <div style="margin-top: 15px;">
+                        <img src="data:image/jpeg;base64,{{ user_data.patient_image }}" 
+                             alt="Patient Photo" 
+                             style="max-width: 200px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                    {% endif %}
                 </div>
                 <div style="text-align: center;">
                     {% if qr_code_image %}
