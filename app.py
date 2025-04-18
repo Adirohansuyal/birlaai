@@ -493,61 +493,59 @@ def display_results(analysis, symptoms):
                 </div>
                 """, unsafe_allow_html=True)
                 
-                if st.button("📱 Generate QR Code", key="generate_qr_code"):
-                    with st.spinner("Generating QR code..."):
-                        # Create data for QR code
-                        user_data = st.session_state.current_analysis['user_data']
-                        
-                        # Create a comprehensive data structure for the QR code
-                        qr_data = {
-                            "patient": user_data.get('patient_name', 'Unknown'),
-                            "age": user_data.get('age', 'Unknown'),
-                            "gender": user_data.get('gender', 'Unknown'),
-                            "symptoms": symptoms,
-                            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-                            "risk_level": analysis.get('risk_level', 'Unknown'),
-                            "seek_medical_attention": analysis.get('seek_medical_attention', False),
-                            "duration": user_data.get('duration', 'Unknown'),
-                            "severity": user_data.get('severity', 'Unknown'),
-                            "app": "AI Health Advisor"
-                        }
-                        
-                        # Convert to JSON string
-                        qr_json = json.dumps(qr_data)
-                        
-                        # Generate QR code
-                        qr_code_image = generate_qr_code(qr_json, size=300)
+                # Create data for QR code
+                user_data = st.session_state.current_analysis['user_data']
+                
+                # Create a comprehensive data structure for the QR code
+                qr_data = {
+                    "patient": user_data.get('patient_name', 'Unknown'),
+                    "age": user_data.get('age', 'Unknown'),
+                    "gender": user_data.get('gender', 'Unknown'),
+                    "symptoms": symptoms,
+                    "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+                    "risk_level": analysis.get('risk_level', 'Unknown'),
+                    "seek_medical_attention": analysis.get('seek_medical_attention', False),
+                    "duration": user_data.get('duration', 'Unknown'),
+                    "severity": user_data.get('severity', 'Unknown'),
+                    "app": "AI Health Advisor"
+                }
+                
+                # Convert to JSON string
+                qr_json = json.dumps(qr_data)
+                
+                # Generate QR code
+                qr_code_image = generate_qr_code(qr_json, size=300)
                         
                         # Display the QR code with instructions
-                        st.markdown("""
-                        <div style="text-align: center; margin: 1rem 0;">
-                            <h3 style="color: #1E88E5;">QR Code Ready</h3>
-                            <p>Show this to your healthcare provider for quick access to your symptom details.</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Display the QR code
-                        st.markdown(f'<div style="display: flex; justify-content: center;"><img src="{qr_code_image}" style="width: 300px; height: 300px;"></div>', unsafe_allow_html=True)
-                        
-                        # Display a caption
-                        st.markdown("""
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <p style="color: #666; font-size: 0.9rem;">
-                                <i>Your healthcare provider can scan this code to quickly access your symptom details.</i>
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Option to save the QR code
-                        st.markdown(f"""
-                        <div style="text-align: center; margin-top: 1rem;">
-                            <a href="{qr_code_image}" download="symptom_qr_code.png" 
-                               style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.5rem 1rem; 
-                                      text-decoration: none; border-radius: 4px; font-weight: bold;">
-                                Save QR Code
-                            </a>
-                        </div>
-                        """, unsafe_allow_html=True)
+                st.markdown("""
+                <div style="text-align: center; margin: 1rem 0;">
+                    <h3 style="color: #1E88E5;">QR Code Ready</h3>
+                    <p>Show this to your healthcare provider for quick access to your symptom details.</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Display the QR code
+                st.markdown(f'<div style="display: flex; justify-content: center;"><img src="{qr_code_image}" style="width: 300px; height: 300px;"></div>', unsafe_allow_html=True)
+                
+                # Display a caption
+                st.markdown("""
+                <div style="text-align: center; margin-top: 1rem;">
+                    <p style="color: #666; font-size: 0.9rem;">
+                        <i>Your healthcare provider can scan this code to quickly access your symptom details.</i>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Option to save the QR code
+                st.markdown(f"""
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="{qr_code_image}" download="symptom_qr_code.png" 
+                       style="display: inline-block; background-color: #1E88E5; color: white; padding: 0.5rem 1rem; 
+                              text-decoration: none; border-radius: 4px; font-weight: bold;">
+                        Save QR Code
+                    </a>
+                </div>
+                """, unsafe_allow_html=True)
                 
         with col2:
             if st.button("🔍 Health Resources", key="health_resources"):
