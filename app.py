@@ -263,6 +263,18 @@ def main():
             """
 
         st.sidebar.markdown(app_description, unsafe_allow_html=True)
+        
+        # Meet the Developers section
+        st.sidebar.markdown("""
+        <div style="text-align: center; margin-top: 1rem;">
+            <h3 style="color: #1E88E5;">Meet the Developer</h3>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.sidebar.button("Connect with Developer"):
+            js = f"""window.open('https://www.linkedin.com/in/aditya-suyal/', '_blank');"""
+            html = f'<script>{js}</script>'
+            st.sidebar.markdown(html, unsafe_allow_html=True)
 
         # Footer
         display_footer()
