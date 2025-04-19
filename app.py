@@ -271,10 +271,7 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        if st.sidebar.button("Connect with Developer"):
-            js = f"""window.open('https://www.linkedin.com/in/aditya-suyal/', '_blank');"""
-            html = f'<script>{js}</script>'
-            st.sidebar.markdown(html, unsafe_allow_html=True)
+        st.sidebar.markdown("[Connect with Developer 🔗](https://www.linkedin.com/in/aditya-suyal/)", unsafe_allow_html=True)
 
         # Footer
         display_footer()
