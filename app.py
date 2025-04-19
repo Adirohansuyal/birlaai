@@ -51,7 +51,7 @@ def main():
         # Sidebar for user information input with improved layout
         st.sidebar.markdown("""
         <div style="text-align: center; margin-bottom: 1rem;">
-            <h2 style="color: #1E88E5;">User Information</h2>
+            <h2 style="color: #1E88E5;">Patient Information</h2>
             <p style="color: #666;">Please provide your details below</p>
         </div>
         """,
