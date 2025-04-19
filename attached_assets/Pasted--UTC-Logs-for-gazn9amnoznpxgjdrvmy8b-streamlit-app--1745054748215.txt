@@ -1,0 +1,108 @@
+[     UTC     ] Logs for gazn9amnoznpxgjdrvmy8b.streamlit.app/
+────────────────────────────────────────────────────────────────────────────────────────
+[09:25:19] 🖥 Provisioning machine...
+[09:25:19] 🎛 Preparing system...
+[09:25:19] ⛓ Spinning up manager process...
+[09:25:18] 🚀 Starting up repository: 'health', branch: 'main', main module: 'app.py'
+[09:25:18] 🐙 Cloning repository...
+[09:25:18] 🐙 Cloning into '/mount/src/health'...
+[09:25:18] 🐙 Cloned repository!
+[09:25:18] 🐙 Pulling code changes from Github...
+[09:25:19] 📦 Processing dependencies...
+Prepared 88 packages in 2.90s
+Installed 88 packages in 295ms
+ + altair==5.5.0
+ + annotated-types==0.7.0
+ + anthropic==0.49.0
+ + anyio==4.9.0
+ + attrs==25.3.0
+ + blinker==1.9.0
+ + brotli==1.1.0
+ + cachetools==5.5.2
+ [2025-04-19 09:25:22.802281] + certifi==2025.1.31
+ + cffi==1.17.1
+ + charset-normalizer==[2025-04-19 09:25:22.802548] 3.4.1
+ + click==8.1.8
+ + contourpy==1.3.2
+ + cssselect2==0.8.0
+ + cycler==[2025-04-19 09:25:22.802801] 0.12.1
+ + distro==1.9.0
+ + fonttools==4.57.0
+ + gitdb[2025-04-19 09:25:22.803011] ==4.0.12
+ + gitpython==3.1.44
+ + google-ai-generativelanguage==0.6.15
+ + google-api-core==2.24.2
+ [2025-04-19 09:25:22.803197] + google-api-python-client==2.167.0
+ + google-auth==2.39.0
+ + google-auth-httplib2==0.2.0
+ + [2025-04-19 09:25:22.803374] google-generativeai==0.8.5
+ + googleapis-common-protos==1.70.0
+ + greenlet==3.2.0
+ + grpcio==1.71.0[2025-04-19 09:25:22.803567] 
+ + grpcio-status==1.71.0
+ + h11==0.14.0
+ + httpcore==1.0.8
+ + httplib2[2025-04-19 09:25:22.803762] ==0.22.0
+ + httpx==0.28.1
+ + idna==3.10
+ + jinja2==[2025-04-19 09:25:22.804171] 3.1.6
+ + jiter==0.9.0
+ + jsonschema==4.23.0
+ +[2025-04-19 09:25:22.804735]  jsonschema-specifications==2024.10.1
+ + kiwisolver==1.4.8
+ + markupsafe==[2025-04-19 09:25:22.804996] 3.0.2
+ + matplotlib==3.10.1
+ + narwhals==1.35.0
+ + numpy[2025-04-19 09:25:22.805186] ==2.2.4
+ + openai==1.75.0
+ + packaging==24.2
+ + pandas==2.2.3
+ + pdfkit==1.0.0
+ + pillow==11.2.1
+ + proto-plus==1.26.1
+ + protobuf==5.29.4
+ + psycopg2-binary==2.9.10
+ + pyarrow==19.0.1
+ + pyasn1==0.6.1
+ + pyasn1-modules==0.4.2
+ + pycparser==2.22
+ + pydantic==2.11.3
+ + pydantic-core==2.33.1
+ + pydeck==0.9.1
+ + pydyf==0.11.0
+ + pyparsing==3.2.3
+ + pyphen==0.17.2
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + qrcode==8.1
+ + referencing==0.36.2
+ + requests==2.32.3
+ + rpds-py==0.24.0
+ + rsa==4.9.1
+ + six==1.17.0
+ + smmap==5.0.2
+ + sniffio==1.3.1
+ + sqlalchemy==2.0.40
+ + streamlit==1.44.1
+ + tenacity==9.1.2
+ + tinycss2==1.4.0
+ + tinyhtml5==2.0.0
+ + toml==0.10.2
+ + tornado==6.4.2
+ + tqdm==4.67.1
+ + typing-extensions==4.13.2
+ + typing-inspection==0.4.0
+ + tzdata==2025.2
+ + uritemplate==4.1.1
+ + urllib3==2.4.0
+ + watchdog==6.0.0
+ + weasyprint==65.1
+ + webencodings==0.5.1
+ + zopfli==0.2.3.post1
+[09:25:23] 🐍 Python dependencies were installed from /mount/src/health/uv.lock using uv-sync.
+[09:25:23] 📦 WARN: More than one requirements file detected in the repository. Available options: uv-sync /mount/src/health/uv.lock, uv /mount/src/health/requirements.txt, poetry /mount/src/health/pyproject.toml. Used: uv-sync with /mount/src/health/uv.lock
+Check if streamlit is installed
+Streamlit is already installed
+[09:25:25] 📦 Processed dependencies!
+[09:25:28] ❗️ The service has encountered an error while checking the health of the Streamlit app: Get "http://localhost:8501/healthz": dial tcp 127.0.0.1:8501: connect: connection refused
+main
