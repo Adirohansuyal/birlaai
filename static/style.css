@@ -143,11 +143,82 @@ h1 {
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .main-container {
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+
+  /* Adjust sidebar for mobile */
+  .css-1d391kg {
+    padding: 1rem 0.5rem;
+  }
+
+  /* Make cards more compact */
+  .condition-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Adjust chat container for mobile */
+  .chat-container {
+    padding: 0.75rem;
+  }
+
+  .chat-message {
+    padding: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Make buttons more touch-friendly */
+  .stButton button {
+    padding: 0.75rem 1rem;
+    min-height: 44px; /* Minimum touch target size */
+  }
+
+  /* Adjust risk badges for mobile */
+  .risk-badge {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  /* Make inputs more touch-friendly */
+  .stTextInput input, 
+  .stNumberInput input, 
+  .stSelectbox select, 
+  .stMultiselect {
+    min-height: 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  /* Adjust footer for mobile */
+  .footer {
+    padding: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  /* Improve tab navigation on mobile */
+  .stTabs button {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Additional responsive breakpoint for very small devices */
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .condition-card {
+    padding: 0.5rem;
+  }
+
+  .stButton button {
+    width: 100%;
+    margin-bottom: 0.5rem;
   }
 }
 
