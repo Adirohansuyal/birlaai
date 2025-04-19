@@ -7,12 +7,14 @@ import streamlit as st
 import base64
 from pathlib import Path
 
+
 def local_css(file_name):
     """
     Load local CSS file
     """
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 def display_header():
     """
@@ -26,15 +28,16 @@ def display_header():
     <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem;">
         Enter your symptoms for a comprehensive health analysis powered by AI
     </p>
-    """, unsafe_allow_html=True)
+    """,
+                unsafe_allow_html=True)
+
 
 def display_medical_disclaimer(expanded=True):
     """
     Display the medical disclaimer
     """
     with st.expander("⚠️ IMPORTANT MEDICAL DISCLAIMER", expanded=expanded):
-        st.warning(
-            """
+        st.warning("""
             This tool is for informational purposes only and does not provide medical advice.
             
             The content provided by this application is not a substitute for professional medical 
@@ -43,8 +46,8 @@ def display_medical_disclaimer(expanded=True):
             
             If you are experiencing a medical emergency, please call your local emergency number 
             or go to the nearest emergency room immediately.
-            """
-        )
+            """)
+
 
 def display_risk_badge(risk_level):
     """
@@ -75,8 +78,9 @@ def display_risk_badge(risk_level):
             ℹ️ UNKNOWN RISK
         </div>
         """
-    
+
     st.markdown(badge_html, unsafe_allow_html=True)
+
 
 def display_medical_attention_alert(seek_medical_attention):
     """
@@ -88,14 +92,17 @@ def display_medical_attention_alert(seek_medical_attention):
             <h3 style="color: #c62828; margin-top: 0;">🚨 SEEK MEDICAL ATTENTION</h3>
             <p>Based on your symptoms, we recommend consulting a healthcare professional as soon as possible.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+                    unsafe_allow_html=True)
     else:
         st.markdown("""
         <div style="background-color: #e8f5e9; border-left: 5px solid #388e3c; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
             <h3 style="color: #388e3c; margin-top: 0;">ℹ️ MONITOR YOUR SYMPTOMS</h3>
             <p>Based on your symptoms, immediate medical attention may not be necessary. However, monitor your condition and consult a healthcare provider if symptoms persist or worsen.</p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+                    unsafe_allow_html=True)
+
 
 def display_symptom_list(symptoms):
     """
@@ -105,6 +112,7 @@ def display_symptom_list(symptoms):
     for symptom in symptoms:
         st.markdown(f'<li>{symptom}</li>', unsafe_allow_html=True)
     st.markdown('</ul>', unsafe_allow_html=True)
+
 
 def display_condition_card(condition):
     """
@@ -116,21 +124,24 @@ def display_condition_card(condition):
         <p><strong>Description:</strong> {condition['description']}</p>
         <p><strong>Common Symptoms:</strong></p>
         <ul>
-    """, unsafe_allow_html=True)
-    
+    """,
+                unsafe_allow_html=True)
+
     for symptom in condition.get('common_symptoms', []):
         st.markdown(f'<li>{symptom}</li>', unsafe_allow_html=True)
-    
+
     st.markdown('</ul>', unsafe_allow_html=True)
-    
+
     # Diet recommendations
     if condition.get('diet_recommendations', []):
-        st.markdown('<p><strong>Diet Recommendations:</strong></p><ul>', unsafe_allow_html=True)
+        st.markdown('<p><strong>Diet Recommendations:</strong></p><ul>',
+                    unsafe_allow_html=True)
         for recommendation in condition.get('diet_recommendations', []):
             st.markdown(f'<li>{recommendation}</li>', unsafe_allow_html=True)
         st.markdown('</ul>', unsafe_allow_html=True)
-    
+
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 def display_chat_message(message, is_user=False):
     """
@@ -142,14 +153,17 @@ def display_chat_message(message, is_user=False):
             <strong>You:</strong><br>
             {message}
         </div>
-        """, unsafe_allow_html=True)
+        """,
+                    unsafe_allow_html=True)
     else:
         st.markdown(f"""
         <div class="chat-message ai-message">
             <strong>AI Assistant:</strong><br>
             {message}
         </div>
-        """, unsafe_allow_html=True)
+        """,
+                    unsafe_allow_html=True)
+
 
 def display_footer():
     """
@@ -157,7 +171,8 @@ def display_footer():
     """
     st.markdown("""
     <div class="footer">
-        <p>© 2025 AI Symptom Checker | This application is for informational purposes only</p>
-        <p>Always consult a healthcare professional for medical advice</p>
+        <p>© 2025 Birla AI Symptom Checker | This application is for informational purposes only</p>
+        <p>Designed by Aditya Suyal @Birla Institute of Applied Sciences</p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+                unsafe_allow_html=True)
