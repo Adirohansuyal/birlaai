@@ -271,7 +271,17 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        st.sidebar.markdown("[Connect with Developer 🔗](https://www.linkedin.com/in/aditya-suyal/)", unsafe_allow_html=True)
+        st.sidebar.markdown("""
+            <a href="https://www.linkedin.com/in/aditya-suyal/" target="_blank" 
+               style="display: inline-block; padding: 0.5rem 1rem; 
+                      background-color: #0077B5; color: white; 
+                      text-decoration: none; border-radius: 4px;
+                      text-align: center; width: 100%;
+                      font-weight: bold; margin: 0.5rem 0;">
+                Connect with Developer 🔗
+            </a>
+            """, 
+            unsafe_allow_html=True)
 
         # Footer
         display_footer()
